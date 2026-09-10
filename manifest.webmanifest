@@ -1,0 +1,27 @@
+{
+  "id": "/CoffeeCalendar/",
+  "name": "우리 부서 커피 당번",
+  "short_name": "커피당번",
+  "description": "부서 커피 캘린더 실행 및 홈 화면 설치",
+  "lang": "ko",
+  "start_url": "./?launch=home",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F2EE",
+  "theme_color": "#3B241D",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
