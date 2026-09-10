@@ -1,49 +1,356 @@
 <!doctype html>
 <html lang="ko">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+
   <meta name="theme-color" content="#3B241D">
   <meta name="application-name" content="커피당번">
+
+  <!-- iPhone 홈 화면 앱 -->
   <meta name="apple-mobile-web-app-title" content="커피당번">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="우리 부서 커피 캘린더를 열고 휴대폰 홈 화면에 추가하세요.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta
+    name="description"
+    content="우리 부서 커피 캘린더"
+  >
+
   <title>커피당번</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-  <link rel="manifest" href="./manifest.webmanifest">
+
+  <!-- 아이콘 -->
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="./apple-touch-icon.png?v=20260911"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="./icon-192.png?v=20260911"
+  >
+
+  <link
+    rel="manifest"
+    href="./manifest.webmanifest"
+  >
+
   <style>
-    *{box-sizing:border-box}html{color:#3b241d;background:#f7f2ee;font:16px/1.6 system-ui,-apple-system,'Malgun Gothic',sans-serif}body{margin:0;min-height:100vh;min-height:100dvh;padding:24px;padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));display:grid;place-items:center}main{width:min(100%,480px)}.identity{text-align:center;margin-bottom:28px}.identity img{width:112px;height:112px;border-radius:24px;box-shadow:0 8px 24px #3b241d24}h1{font-size:1.65rem;line-height:1.3;margin:18px 0 8px}p{margin:8px 0;color:#69544b}.open,button{display:block;width:100%;min-height:48px;padding:14px 18px;border:1px solid #6b4a3d;border-radius:12px;font:inherit;font-weight:750;text-align:center;cursor:pointer}.open{background:#6b4a3d;color:#fff;text-decoration:none}button{margin-top:10px;background:#fff;color:#52382b}article{margin:24px 0;padding:20px;background:#fff;border:1px solid #e4d6ce;border-radius:16px}h2{font-size:1rem;margin:0 0 12px}ol{padding-left:22px;margin:0}li{margin:10px 0}.small{font-size:.875rem}.device{font-weight:750;color:#3b241d}#status{margin-top:12px}.notice{background:#eee3da;padding:12px;border-radius:10px}.url{word-break:break-all;font-size:.8rem;color:#765f51}a:focus-visible,button:focus-visible{outline:3px solid #ad7018;outline-offset:3px}[hidden]{display:none!important}@media(display-mode:standalone){#installation{display:none}body{align-items:center}}
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+
+      width: 100%;
+      height: 100%;
+
+      overflow: hidden;
+
+      background: #F7F2EE;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        "Malgun Gothic",
+        sans-serif;
+    }
+
+
+    /* =====================================================
+       설치 안내 화면
+       ===================================================== */
+
+    #installPage {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(20px, env(safe-area-inset-right))
+        max(24px, env(safe-area-inset-bottom))
+        max(20px, env(safe-area-inset-left));
+
+      display: grid;
+      place-items: center;
+
+      color: #3B241D;
+    }
+
+    #installPage main {
+      width: min(100%, 480px);
+    }
+
+    .identity {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .identity img {
+      width: 112px;
+      height: 112px;
+
+      border-radius: 24px;
+
+      box-shadow:
+        0 8px 24px
+        rgba(59, 36, 29, 0.14);
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      line-height: 1.3;
+
+      margin: 18px 0 8px;
+    }
+
+    p {
+      margin: 8px 0;
+      color: #69544B;
+    }
+
+    article {
+      margin: 24px 0;
+      padding: 20px;
+
+      background: #FFFFFF;
+
+      border: 1px solid #E4D6CE;
+      border-radius: 16px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin: 0 0 12px;
+    }
+
+    ol {
+      padding-left: 22px;
+      margin: 0;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    .small {
+      font-size: 0.875rem;
+    }
+
+    .device {
+      font-weight: 750;
+      color: #3B241D;
+    }
+
+    .notice {
+      padding: 12px;
+      border-radius: 10px;
+
+      background: #EEE3DA;
+    }
+
+    .url {
+      word-break: break-all;
+
+      font-size: 0.8rem;
+      color: #765F51;
+    }
+
+
+    /* =====================================================
+       실제 앱 화면
+       ===================================================== */
+
+    #appPage {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+
+      background: #F7F2EE;
+    }
+
+    #coffeeApp {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      margin: 0;
+      padding: 0;
+
+      border: 0;
+
+      background: #F7F2EE;
+    }
+
+
+    /* =====================================================
+       홈 화면 앱으로 실행했을 때
+       ===================================================== */
+
+    @media (display-mode: standalone) {
+
+      #installPage {
+        display: none;
+      }
+
+      #appPage {
+        display: block;
+      }
+
+    }
+
   </style>
 </head>
+
+
 <body>
-<main>
-  <div class="identity"><img src="./icon-192.png" width="112" height="112" alt="커피당번 아이콘"><h1>우리 부서 커피</h1><p>오늘의 담당과 점심 일정을 확인하세요.</p></div>
-  <a id="openApp" class="open" href="https://script.google.com/macros/s/AKfycbwRVhzQG2H0Y-Zw2q51FCCIDbKfF7R21r5asUaK4z1ibj2Wh2l-4KaDXlc8vcfH9T0/exec" target="_blank" rel="noopener">커피 캘린더 열기</a>
-  <button id="install" type="button" hidden>휴대폰에 설치</button>
-  <p id="status" role="status" aria-live="polite"></p>
-  <article id="installation">
-    <h2>이 화면에서 홈 화면에 추가하세요</h2>
-    <ol>
-      <li><span class="device">iPhone · Safari</span><br>공유 버튼 → 홈 화면에 추가 → 추가</li>
-      <li><span class="device">Galaxy · Chrome</span><br>오른쪽 위 ⋮ → 홈 화면에 추가 또는 앱 설치</li>
-      <li><span class="device">Galaxy · 삼성 인터넷</span><br>메뉴 → 현재 페이지 추가 → 홈 화면</li>
-    </ol>
-    <p class="small notice">아이콘 없이 만든 기존 바로가기는 삭제한 뒤, <strong>지금 이 화면</strong>에서 다시 추가하세요. 카카오톡 안에서 열었다면 Safari·Chrome 등 기본 브라우저로 먼저 여세요.</p>
-    <p class="url">seok19961021.github.io/CoffeeCalendar/</p>
-  </article>
-  <p class="small">캘린더는 Google 로그인과 기존 부서 인증을 사용합니다. 캘린더를 열면 Google 화면으로 연결됩니다. 일정 조회·저장에는 인터넷이 필요합니다.</p>
-</main>
-<script>
-  // 설치 전에 다른 도메인으로 이동하면 그 주소의 아이콘을 저장하게 되므로 자동 이동하지 않는다.
-  let pendingInstall;
-  const installButton=document.getElementById('install'),status=document.getElementById('status');
-  addEventListener('beforeinstallprompt',event=>{event.preventDefault();pendingInstall=event;installButton.hidden=false;});
-  installButton.addEventListener('click',async()=>{if(!pendingInstall)return;installButton.disabled=true;try{await pendingInstall.prompt();const choice=await pendingInstall.userChoice;status.textContent=choice.outcome==='accepted'?'설치 요청을 완료했습니다. 홈 화면에서 커피당번 아이콘을 확인하세요.':'브라우저 메뉴에서도 홈 화면에 추가할 수 있습니다.';}finally{pendingInstall=null;installButton.hidden=true;installButton.disabled=false;}});
-  addEventListener('appinstalled',()=>{status.textContent='설치되었습니다.';installButton.hidden=true;});
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{status.textContent='브라우저 메뉴에서 홈 화면에 추가할 수 있습니다.';});
-  function onlineStatus(){if(!navigator.onLine)status.textContent='오프라인입니다. 인터넷 연결 후 커피 캘린더를 열어주세요.';else if(status.textContent.startsWith('오프라인'))status.textContent='';}
-  addEventListener('online',onlineStatus);addEventListener('offline',onlineStatus);onlineStatus();
-</script>
-</body></html>
+
+
+  <!-- =====================================================
+       Safari / Chrome에서 접속했을 때
+       홈 화면 추가 안내
+       ===================================================== -->
+
+  <div id="installPage">
+
+    <main>
+
+      <div class="identity">
+
+        <img
+          src="./icon-192.png"
+          width="112"
+          height="112"
+          alt="커피당번 아이콘"
+        >
+
+        <h1>
+          우리 부서 커피
+        </h1>
+
+        <p>
+          오늘의 담당과 점심 일정을 확인하세요.
+        </p>
+
+      </div>
+
+
+      <article>
+
+        <h2>
+          홈 화면에 추가하세요
+        </h2>
+
+        <ol>
+
+          <li>
+            <span class="device">
+              iPhone · Safari
+            </span>
+            <br>
+            공유 버튼 → 홈 화면에 추가 → 추가
+          </li>
+
+          <li>
+            <span class="device">
+              Galaxy · Chrome
+            </span>
+            <br>
+            오른쪽 위 ⋮ → 홈 화면에 추가 또는 앱 설치
+          </li>
+
+          <li>
+            <span class="device">
+              Galaxy · 삼성 인터넷
+            </span>
+            <br>
+            메뉴 → 현재 페이지 추가 → 홈 화면
+          </li>
+
+        </ol>
+
+
+        <p class="small notice">
+          기존 커피당번 바로가기가 있다면 삭제한 뒤
+          현재 페이지에서 다시 홈 화면에 추가하세요.
+        </p>
+
+
+        <p class="url">
+          seok19961021.github.io/CoffeeCalendar/
+        </p>
+
+      </article>
+
+    </main>
+
+  </div>
+
+
+  <!-- =====================================================
+       홈 화면 아이콘으로 실행했을 때
+       Apps Script를 앱 내부에 표시
+       ===================================================== -->
+
+  <div id="appPage">
+
+    <iframe
+      id="coffeeApp"
+      src="https://script.google.com/macros/s/AKfycbwRVhzQG2H0Y-Zw2q51FCCIDbKfF7R21r5asUaK4z1ibj2Wh2l-4KaDXlc8vcfH9T0/exec"
+      title="우리 부서 커피"
+      allow="fullscreen"
+    ></iframe>
+
+  </div>
+
+
+  <script>
+
+    /*
+     * 일부 iOS 버전의 standalone 판정을
+     * JavaScript에서도 한 번 더 확인
+     */
+
+    const standalone =
+      window.matchMedia('(display-mode: standalone)').matches
+      ||
+      window.navigator.standalone === true;
+
+
+    if (standalone) {
+
+      document
+        .getElementById('installPage')
+        .style.display = 'none';
+
+
+      document
+        .getElementById('appPage')
+        .style.display = 'block';
+
+    }
+
+  </script>
+
+
+</body>
+
+</html>
