@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>우리 부서 커피 당번</title>
+
+
+  <!-- =====================================================
+       iPhone / iPad 홈 화면 아이콘
+       GitHub 저장소의 coffee-icon.png 사용
+       ===================================================== -->
+
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="./coffee-icon.png?v=10"
+  >
+
+
+  <!-- =====================================================
+       Android / Chrome / 일반 브라우저 아이콘
+       ===================================================== -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="./coffee-icon.png?v=10"
+  >
+
+
+  <!-- =====================================================
+       iPhone 홈 화면 앱 설정
+       ===================================================== -->
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="커피당번"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+
+  <!-- =====================================================
+       Android 앱 설정
+       ===================================================== -->
+
+  <meta
+    name="application-name"
+    content="커피당번"
+  >
+
+  <meta
+    name="theme-color"
+    content="#3B241D"
+  >
+
+
+  <!-- =====================================================
+       기본 스타일
+       ===================================================== -->
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #F7F2EE;
+      overflow: hidden;
+    }
+
+    body {
+      font-family:
+        system-ui,
+        -apple-system,
+        "Malgun Gothic",
+        sans-serif;
+    }
+
+
+    /*
+     * Apps Script Web App을
+     * 화면 전체에 표시
+     */
+    #coffeeApp {
+      display: block;
+      width: 100%;
+      height: 100dvh;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      background: #F7F2EE;
+    }
+
+
+    /*
+     * 로딩 화면
+     */
+    #loading {
+      position: fixed;
+      inset: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      background: #F7F2EE;
+      color: #3B241D;
+
+      z-index: 100;
+    }
+
+    #loadingIcon {
+      width: 92px;
+      height: 92px;
+
+      border-radius: 22px;
+
+      margin-bottom: 18px;
+
+      box-shadow:
+        0 8px 24px
+        rgba(59, 36, 29, 0.15);
+    }
+
+    #loadingTitle {
+      font-size: 1.15rem;
+      font-weight: 800;
+
+      margin-bottom: 6px;
+    }
+
+    #loadingText {
+      font-size: 0.9rem;
+      color: #79665C;
+    }
+
+
+    /*
+     * iPhone Safe Area 대응
+     */
+    @supports (
+      padding-top:
+      env(safe-area-inset-top)
+    ) {
+
+      body {
+        padding-top:
+          env(safe-area-inset-top);
+
+        padding-bottom:
+          env(safe-area-inset-bottom);
+      }
+
+      #coffeeApp {
+        height:
+          calc(
+            100dvh
+            - env(safe-area-inset-top)
+            - env(safe-area-inset-bottom)
+          );
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       앱 로딩 화면
+       ===================================================== -->
+
+  <div id="loading">
+
+    <img
+      id="loadingIcon"
+      src="./coffee-icon.png?v=10"
+      alt="커피당번 아이콘"
+    >
+
+    <div id="loadingTitle">
+      우리 부서 커피
+    </div>
+
+    <div id="loadingText">
+      커피 캘린더를 불러오는 중입니다.
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       Apps Script Web App
+       
+       아래 src 부분만 실제 /exec 주소로 변경
+       ===================================================== -->
+
+  <iframe
+    id="coffeeApp"
+    src="https://script.google.com/macros/s/AKfycbwRVhzQG2H0Y-Zw2q51FCCIDbKfF7R21r5asUaK4z1ibj2Wh2l-4KaDXlc8vcfH9T0/exec"
+    title="우리 부서 커피 당번"
+    allow="fullscreen"
+  ></iframe>
+
+
+  <script>
+
+    /*
+     * Apps Script 화면이 로딩되면
+     * GitHub Pages 로딩 화면 제거
+     */
+
+    const coffeeApp =
+      document.getElementById(
+        'coffeeApp'
+      );
+
+    const loading =
+      document.getElementById(
+        'loading'
+      );
+
+
+    coffeeApp.addEventListener(
+      'load',
+      function () {
+
+        setTimeout(
+          function () {
+
+            loading.style.display =
+              'none';
+
+          },
+          300
+        );
+
+      }
+    );
+
+  </script>
+
+
+</body>
+
+</html>
