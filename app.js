@@ -305,7 +305,7 @@ function lockUI(value) {
 
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbyGgPJjkr9LsyHF058WmgaACphjN_IlV7PPZs66D2kRWBHHSqD-_L0ZEa2WW2N8LMc/exec';
+  'https://coffee-calendar-api.s-eok96.workers.dev/';
 
 
 /*
