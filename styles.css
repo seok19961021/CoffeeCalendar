@@ -779,3 +779,6 @@ body input, body select, body textarea { font-size:max(16px, 1rem); }
 #lunchSpin {display:block;width:100%;}
 #lunchResult {text-align:center;font-weight:700;overflow-wrap:anywhere;}
 
+.day .day-lunch {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:4px;padding-top:3px;border-top:1px dashed #cbb7a7;color:#654533;font-size:10px;white-space:normal;overflow-wrap:anywhere;line-height:1.3;}
+.lunch-detail {padding:10px;border-radius:8px;background:#f5eadc;font-weight:700;overflow-wrap:anywhere;}
+

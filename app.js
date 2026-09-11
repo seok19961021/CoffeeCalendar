@@ -1360,6 +1360,13 @@ function renderCalendar() {
       }
 
 
+      const lunchRecord = data.lunchHistory?.[date];
+      if (lunchRecord) {
+        const label = node('small', '🍽 ' + lunchRecord.name, 'day-lunch');
+        label.title = '점심: ' + lunchRecord.name;
+        b.append(label);
+        b.setAttribute('aria-label', b.getAttribute('aria-label') + ' · 점심 ' + lunchRecord.name);
+      }
       $('grid').append(
         b
       );
@@ -1439,6 +1446,8 @@ function renderDetail(day) {
     )
   );
 
+
+  if (data.lunchHistory?.[day.date]) root.append(node('p', '점심 식당: ' + data.lunchHistory[day.date].name, 'lunch-detail'));
 
   if (
     day.queueBefore?.length
@@ -3198,7 +3207,7 @@ for (let n=2;n<=12;n++) { const option=document.createElement('option'); option.
 function renderLunchRoulette() {
   if (!data?.currentUser) return;
   const lunch=data.lunchRoulette || {revision:0,slots:['','','',''],result:null};
-  const current=lunch.result?.date===data.today ? lunch.result : null;
+  const current=lunch.result?.date===data.today ? lunch.result : (data.lunchHistory?.[data.today] || null);
   $('lunchToday').textContent=current ? current.name : '아직 선택하지 않았어요';
   if (lunchSpinning) return;
   $('lunchResult').textContent=current ? '오늘의 선택: '+current.name : '식당을 입력하고 룰렛을 돌려 보세요.';
@@ -3241,7 +3250,7 @@ $('lunchEditForm').onsubmit=async e=>{
 };
 $('lunchEditCancel').onclick=()=>$('lunchEditDialog').close();
 $('lunchReset').onclick=async()=>{
-  if(busy||lunchSpinning||!confirm('부서 공용 룰렛의 모든 식당과 선택 결과를 초기화할까요?'))return;
+  if(busy||lunchSpinning||!confirm('룰렛의 식당 목록과 선택 상태를 초기화할까요? 캘린더의 날짜별 점심 기록은 유지됩니다.'))return;
   await change('resetLunchRoulette',{revision:data.lunchRoulette?.revision||0});
 };
 $('lunchSpin').onclick=async()=>{
