@@ -1014,6 +1014,7 @@ function schedulesInto(
    ========================================================= */
 
 function render() {
+  renderLunchRoulette();
   const subscription = data?.calendarSubscription;
   $('calendarAddLink').hidden = !subscription;
   $('calendarAddMissing').hidden = !!subscription;
@@ -3139,7 +3140,7 @@ updateConnectionStatus();
 // 조회는 화면을 잠그지 않으며 편집/저장/화면 전환 중 도착한 응답은 적용하지 않는다.
 function safeToRefresh() {
   return !busy && !document.hidden && navigator.onLine !== false && !dirtyForms.size &&
-    !document.querySelector('dialog[open]') && !document.activeElement?.matches('input,select,textarea') &&
+    !document.querySelector('dialog[open], #lunchRoulette[open]') && !document.activeElement?.matches('input,select,textarea') &&
     !document.querySelector('#admin:not([hidden])');
 }
 async function refreshQuietly() {
@@ -3189,4 +3190,77 @@ $('closeColor').onclick = () => $('colorDialog').close();
 
 $('addGoogleCalendar').onclick = () => $('calendarAddDialog').showModal();
 $('closeCalendarAdd').onclick = () => $('calendarAddDialog').close();
+
+let lunchSpinning = false;
+let lunchEdit = null;
+const lunchFills = ['#E6C8A9','#D5DDBA','#C4DBE0','#E5C5CF','#D6C9E5','#E8DCA9'];
+for (let n=2;n<=12;n++) { const option=document.createElement('option'); option.value=n; option.textContent=n+'칸'; $('lunchCount').append(option); }
+function renderLunchRoulette() {
+  if (!data?.currentUser) return;
+  const lunch=data.lunchRoulette || {revision:0,slots:['','','',''],result:null};
+  const current=lunch.result?.date===data.today ? lunch.result : null;
+  $('lunchToday').textContent=current ? current.name : '아직 선택하지 않았어요';
+  if (lunchSpinning) return;
+  $('lunchResult').textContent=current ? '오늘의 선택: '+current.name : '식당을 입력하고 룰렛을 돌려 보세요.';
+  $('lunchCount').value=lunch.slots.length;
+  const wheel=$('lunchWheel'); wheel.style.transform=''; wheel.replaceChildren();
+  const svg=(tag,attrs)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);return e;};
+  lunch.slots.forEach((name,index)=>{
+    const step=2*Math.PI/lunch.slots.length, start=index*step-Math.PI/2-step/2,end=start+step, mid=(start+end)/2;
+    const group=svg('g',{role:'button',tabindex:'0','aria-label':(index+1)+'번 칸: '+(name||'식당 입력')});
+    const p=angle=>[160+150*Math.cos(angle),160+150*Math.sin(angle)];const p1=p(start),p2=p(end);
+    group.append(svg('path',{d:`M160,160 L${p1} A150,150 0 0,1 ${p2} Z`,fill:lunchFills[index%lunchFills.length],stroke:'#fff','stroke-width':2}));
+    const text=svg('text',{x:160+98*Math.cos(mid),y:164+98*Math.sin(mid),'text-anchor':'middle'});
+    const limit=lunch.slots.length>8?3:6;
+    text.style.fontSize=lunch.slots.length>8?'10px':'12px';
+    text.textContent=name ? (name.length>limit?name.slice(0,limit)+'…':name) : (index+1)+'번 입력'; group.append(text);
+    const title=svg('title',{});title.textContent=name||'식당 이름 입력';group.append(title);
+    const edit=async()=>{
+      if(busy||lunchSpinning)return;
+      lunchEdit={index,revision:lunch.revision,slots:[...lunch.slots]};
+      $('lunchEditTitle').textContent=(index+1)+'번 칸 식당 이름';
+      $('lunchRestaurant').value=name;
+      $('lunchEditDialog').showModal();
+      $('lunchRestaurant').focus();
+    };
+    group.onclick=edit;group.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();edit();}};wheel.append(group);
+  });
+}
+$('lunchCount').onchange=async()=>{
+  if(busy||lunchSpinning){renderLunchRoulette();return;}
+  const lunch=data.lunchRoulette||{revision:0,slots:['','','','']}, count=Number($('lunchCount').value);
+  if(count<lunch.slots.length&&!confirm('줄어드는 칸의 식당 이름이 삭제됩니다. 계속할까요?')){renderLunchRoulette();return;}
+  const slots=Array.from({length:count},(_,i)=>lunch.slots[i]||'');
+  if(!await change('saveLunchRoulette',{revision:lunch.revision,slots}))renderLunchRoulette();
+};
+$('lunchEditForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!lunchEdit||busy)return;
+  const slots=[...lunchEdit.slots];slots[lunchEdit.index]=$('lunchRestaurant').value.trim();
+  if(await change('saveLunchRoulette',{revision:lunchEdit.revision,slots}))$('lunchEditDialog').close();
+};
+$('lunchEditCancel').onclick=()=>$('lunchEditDialog').close();
+$('lunchReset').onclick=async()=>{
+  if(busy||lunchSpinning||!confirm('부서 공용 룰렛의 모든 식당과 선택 결과를 초기화할까요?'))return;
+  await change('resetLunchRoulette',{revision:data.lunchRoulette?.revision||0});
+};
+$('lunchSpin').onclick=async()=>{
+  if(busy||lunchSpinning)return;
+  const lunch=data.lunchRoulette||{revision:0,slots:[]};
+  if(lunch.slots.length<2||lunch.slots.some(s=>!s.trim())){message('모든 칸에 식당 이름을 입력하세요.',true);return;}
+  // 서버에서 한 번 선택/저장한 결과를 같은 칸에 멈추는 애니메이션으로 보여 준다.
+  lunchSpinning=true;
+  if(!await change('spinLunchRoulette',{revision:lunch.revision})){lunchSpinning=false;renderLunchRoulette();return;}
+  $('lunchResult').textContent='오늘 점심을 고르는 중…';
+  const result=data.lunchRoulette.result,rotation=1800-result.index*360/lunch.slots.length;
+  $('lunchSpin').disabled=true;$('lunchCount').disabled=true;$('lunchReset').disabled=true;
+  try {
+    const animation=$('lunchWheel').animate([{transform:'rotate(0deg)'},{transform:`rotate(${rotation}deg)`}],{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:3000,easing:'cubic-bezier(.12,.72,.13,1)',fill:'forwards'});
+    await animation.finished;
+    $('lunchWheel').style.transform=`rotate(${rotation%360}deg)`;animation.cancel();
+  } finally {
+    lunchSpinning=false;$('lunchSpin').disabled=false;$('lunchCount').disabled=false;$('lunchReset').disabled=false;
+    $('lunchResult').textContent='오늘의 선택: '+result.name;
+  }
+};
 

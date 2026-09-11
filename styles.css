@@ -762,3 +762,20 @@ body input, body select, body textarea { font-size:max(16px, 1rem); }
 #calendarAddDialog { max-height:85dvh; overflow-y:auto; }
 #calendarAddDialog li { margin-bottom:10px; }
 
+.lunch-today {font-size:.9rem;border-top:1px solid #ffffff30;padding-top:10px;margin-bottom:10px;overflow-wrap:anywhere;}
+.lunch-roulette {margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card);}
+.lunch-roulette summary {cursor:pointer;font-weight:700;min-height:32px;}
+.lunch-roulette summary span {font-size:.8rem;font-weight:400;color:var(--text-sub);margin-left:6px;}
+.lunch-settings {display:flex;align-items:center;gap:10px;}
+.lunch-settings label {margin:0;white-space:nowrap;}
+.lunch-settings select {width:75px;margin:0;}
+#lunchReset {margin-left:auto;}
+.lunch-wheel-wrap {width:min(100%,320px);margin:20px auto 12px;position:relative;}
+.lunch-pointer {position:absolute;top:-16px;left:50%;transform:translateX(-50%);color:var(--dark-roast);z-index:1;font-size:27px;}
+#lunchWheel {display:block;width:100%;height:auto;overflow:visible;}
+#lunchWheel [role=button] {cursor:pointer;outline:none;}
+#lunchWheel [role=button]:focus path {stroke:#141414;stroke-width:4;}
+#lunchWheel text {font-size:12px;font-weight:650;fill:#30221c;pointer-events:none;}
+#lunchSpin {display:block;width:100%;}
+#lunchResult {text-align:center;font-weight:700;overflow-wrap:anywhere;}
+
