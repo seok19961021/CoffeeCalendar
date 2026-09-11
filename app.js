@@ -38,6 +38,10 @@ let selectedDay = '';
 let queueDraft = [];
 
 let loadNumber = 0;
+let backgroundLoading = false;
+let lastRefresh = 0;
+let editGeneration = 0;
+const dirtyForms = new Set();
 
 let adminUnlocked = false;
 
@@ -206,6 +210,7 @@ function names(
 
 
 function color(id) {
+  if (/^#[0-9a-f]{6}$/i.test(data?.memberColors?.[id] || "")) return data.memberColors[id];
 
   if (!data) {
     return colors[0];
@@ -356,6 +361,7 @@ async function rpc(method, ...args) {
    ========================================================= */
 
 function hideApplication() {
+  $('memberColor').hidden = true;
 
   document
     .querySelector('nav')
@@ -513,6 +519,11 @@ async function load() {
     /*
      * 개인 사용자 인증 필요
      */
+    if (result.accessToken) {
+      safeStorage.setItem('coffeeDeviceAccess', result.accessToken);
+      $('accessCode').value = result.accessToken;
+    }
+    lastRefresh = Date.now();
     if (
       result.authRequired
     ) {
@@ -583,6 +594,8 @@ async function load() {
       )
     ) {
 
+      safeStorage.removeItem('coffeeDeviceAccess');
+      $('accessCode').value = '';
       hideApplication();
 
       $('identityGate')
@@ -640,6 +653,7 @@ async function change(
   }
 
 
+  ++loadNumber;
   lockUI(true);
 
   message(
@@ -712,6 +726,8 @@ async function change(
     render();
 
 
+    dirtyForms.clear();
+    lastRefresh = Date.now();
     message(data.calendarWarning || '저장되었습니다.', !!data.calendarWarning);
 
 
@@ -998,6 +1014,8 @@ function schedulesInto(
    ========================================================= */
 
 function render() {
+  if (data?.currentUser) { $('memberColor').hidden = false; $('memberColor').style.backgroundColor = color(data.currentUser.id); }
+
 
   if (
     !data ||
@@ -3094,6 +3112,7 @@ for (
    최초 실행
    ========================================================= */
 
+$('accessCode').value = safeStorage.getItem('coffeeDeviceAccess') || '';
 load();
 
 
@@ -3106,4 +3125,55 @@ function updateConnectionStatus() {
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
 updateConnectionStatus();
+
+// 조회는 화면을 잠그지 않으며 편집/저장/화면 전환 중 도착한 응답은 적용하지 않는다.
+function safeToRefresh() {
+  return !busy && !document.hidden && navigator.onLine !== false && !dirtyForms.size &&
+    !document.querySelector('dialog[open]') && !document.activeElement?.matches('input,select,textarea') &&
+    !document.querySelector('#admin:not([hidden])');
+}
+async function refreshQuietly() {
+  if (!data?.currentUser || backgroundLoading || !safeToRefresh() || Date.now()-lastRefresh < 60000) return;
+  backgroundLoading = true;
+  const sequence = loadNumber, edit = editGeneration, y = year, m = month;
+  try {
+    const result = await rpc('getData', y, m, $('accessCode').value, sessionToken);
+    if (sequence !== loadNumber || edit !== editGeneration || y !== year || m !== month || !safeToRefresh()) return;
+    if (result.authRequired) { showIdentityGate(result); return; }
+    data = result; lastRefresh = Date.now(); render();
+  } catch (error) {
+    lastRefresh = Date.now();
+    if (String(error.message).includes('ACCESS_REQUIRED') && sequence === loadNumber && safeToRefresh()) {
+      safeStorage.removeItem('coffeeDeviceAccess'); $('accessCode').value = '';
+      hideApplication(); $('identityGate').hidden = true; $('accessGate').hidden = false;
+      message('부서 접속 정보가 변경되었습니다. 암호를 다시 입력하세요.', true);
+    }
+  }
+  finally { backgroundLoading = false; }
+}
+document.addEventListener('input', e => {
+  ++editGeneration;
+  if (e.target.form && !e.target.closest('#accessGate,#identityGate')) dirtyForms.add(e.target.form);
+});
+document.addEventListener('reset', e => dirtyForms.delete(e.target));
+document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('close', () => {
+  dialog.querySelectorAll('form').forEach(form => dirtyForms.delete(form));
+}));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshQuietly(); });
+window.addEventListener('online', refreshQuietly);
+setInterval(refreshQuietly, 120000);
+const markerPalette = ['#5D4037','#A85D32','#D04C55','#B83C88','#8253B5','#435ECC','#1677B8','#00857A','#54852D','#967300'];
+$('memberColor').onclick = () => {
+  $('colorChoices').replaceChildren();
+  markerPalette.forEach(value => {
+    const choice = button('', async () => {
+      if (await change('saveMemberColor', {color:value})) $('colorDialog').close();
+    });
+    choice.className='color-choice'; choice.style.backgroundColor=value;
+    choice.setAttribute('aria-label','색상 '+value); choice.setAttribute('aria-pressed',String(value.toUpperCase()===color(data.currentUser.id).toUpperCase()));
+    $('colorChoices').append(choice);
+  });
+  $('colorDialog').showModal();
+};
+$('closeColor').onclick = () => $('colorDialog').close();
 

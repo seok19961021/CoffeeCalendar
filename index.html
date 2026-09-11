@@ -9,18 +9,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="우리 부서 커피 당번 및 점심 일정 관리">
-  <title>우리 부서 커피 당번</title>
+  <title>Coffee Calendar</title>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-pwa-v6">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-pwa-v6">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-pwa-v7">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-pwa-v7">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260911-pwa-v6">
+  <link rel="stylesheet" href="./styles.css?v=20260911-pwa-v7">
 </head>
 <body>
 <header>
 
   <div class="brand">
-    ☕ 우리 부서 커피
+    ☕ Coffee Calendar
   </div>
 
   <div style="
@@ -31,6 +31,7 @@
       justify-content:flex-end;
     ">
 
+    <button id="memberColor" type="button" title="내 표시 색상 선택" aria-label="내 표시 색상 선택" hidden></button>
     <span id="loginUser" style="
         font-size:.85rem;
         font-weight:700;
@@ -52,7 +53,7 @@
 <main>
   <aside id="connectionStatus" role="status" aria-live="polite" hidden></aside>
   <aside id="appUpdate" hidden>
-    새 버전이 준비되었습니다. 입력 중인 내용을 저장한 뒤 적용하세요.
+    새 버전이 준비되었습니다. 입력을 마치면 자동 적용됩니다.
     <button type="button" id="applyUpdate" class="secondary">새 버전 적용</button>
   </aside>
   <details class="install-help">
@@ -60,7 +61,7 @@
     <p>iPhone: Safari 공유 → 홈 화면에 추가 → ‘웹 앱으로 열기’를 켜고 추가하세요.</p>
     <p>Galaxy: Chrome 메뉴 → 홈 화면에 추가 → 설치를 선택하세요. 메뉴 이름은 브라우저 버전에 따라 다를 수 있습니다.</p>
     <p>기존 아이콘이 브라우저로 열리면 기존 바로가기를 삭제하고 이 페이지에서 다시 추가하세요. 홈 화면의 새 아이콘으로 실행합니다.</p>
-    <small>앱 버전: 20260911-pwa-v6 · 일정 조회·저장에는 인터넷 연결이 필요합니다.</small>
+    <small>앱 버전: 20260911-pwa-v7 · 일정 조회·저장에는 인터넷 연결이 필요합니다.</small>
   </details>
 
 
@@ -742,17 +743,27 @@
 
 </dialog>
 
-<script src="./app.js?v=20260911-pwa-v6"></script>
+<dialog id="colorDialog"><h2>내 표시 색상</h2><p>선택한 색상은 모든 구성원의 달력에 반영됩니다.</p><div id="colorChoices"></div><button type="button" id="closeColor">닫기</button></dialog>
+<script src="./app.js?v=20260911-pwa-v7"></script>
 <script>
 (function () {
   let registration;
   const updateBox = document.getElementById('appUpdate');
-  function showUpdate() { if (registration && registration.waiting) updateBox.hidden = false; }
-  document.getElementById('applyUpdate').addEventListener('click', function () {
-    if (!registration || !registration.waiting) { location.reload(); return; }
-    navigator.serviceWorker.addEventListener('controllerchange', function () { location.reload(); }, { once: true });
-    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-  });
+  function showUpdate() {
+    if (!registration?.waiting) return;
+    if (safeToRefresh()) { apply(); } else { updateBox.hidden = false; }
+  }
+  let applying = false;
+  function apply() {
+    if (applying || !registration?.waiting) return;
+    if (!safeToRefresh()) { updateBox.hidden = false; return; }
+    applying = true;
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload(), {once:true});
+    registration.waiting.postMessage({type:'SKIP_WAITING'});
+  }
+  setInterval(showUpdate, 3000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { registration?.update().catch(()=>{}); showUpdate(); } });
+  document.getElementById('applyUpdate').addEventListener('click', apply);
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async function () {
       try {
