@@ -1014,6 +1014,15 @@ function schedulesInto(
    ========================================================= */
 
 function render() {
+  const subscription = data?.calendarSubscription;
+  $('calendarAddLink').hidden = !subscription;
+  $('calendarAddMissing').hidden = !!subscription;
+  if (subscription) {
+    $('calendarAddLink').href = subscription.url;
+    $('calendarAccount').textContent = subscription.email ? '연결할 계정: ' + subscription.email : '본인 Google 계정으로 추가하세요.';
+    $('calendarName').textContent = subscription.name;
+  }
+
   if (data?.currentUser) { $('memberColor').hidden = false; $('memberColor').style.backgroundColor = color(data.currentUser.id); }
 
 
@@ -3112,7 +3121,8 @@ for (
    최초 실행
    ========================================================= */
 
-$('accessCode').value = safeStorage.getItem('coffeeDeviceAccess') || '';
+safeStorage.removeItem('coffeeDeviceAccess');
+$('accessCode').value = '';
 load();
 
 
@@ -3176,4 +3186,7 @@ $('memberColor').onclick = () => {
   $('colorDialog').showModal();
 };
 $('closeColor').onclick = () => $('colorDialog').close();
+
+$('addGoogleCalendar').onclick = () => $('calendarAddDialog').showModal();
+$('closeCalendarAdd').onclick = () => $('calendarAddDialog').close();
 

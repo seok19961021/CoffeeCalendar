@@ -751,3 +751,14 @@ nav { top:env(safe-area-inset-top, 0px); }
 .color-choice[aria-pressed=true] { outline:3px solid var(--text-main); outline-offset:2px; }
 @media(max-width:540px) { header {flex-wrap:wrap; gap:6px;} header .brand {white-space:nowrap; font-size:1rem;} header button {font-size:12px;padding:7px 8px;} header #refresh {font-size:0;width:32px;} header #refresh::after {content:'↻';font-size:20px;} }
 
+/* label의 작은 글꼴 상속으로 생기는 iOS 자동 확대 방지. 사용자 핀치 확대는 유지한다. */
+html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body input, body select, body textarea { font-size:max(16px, 1rem); }
+#accessGate, #teamSetup { display:none !important; }
+.calendar-connect { display:flex; justify-content:flex-end; margin:0 0 12px; }
+.calendar-connect button { font-size:13px; }
+.calendar-link { display:inline-block; border-radius:8px; padding:12px; background:var(--dark-roast); color:white; text-decoration:none; }
+.calendar-link[hidden] { display:none; }
+#calendarAddDialog { max-height:85dvh; overflow-y:auto; }
+#calendarAddDialog li { margin-bottom:10px; }
+
