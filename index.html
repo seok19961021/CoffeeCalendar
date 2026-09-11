@@ -11,10 +11,10 @@
   <meta name="description" content="우리 부서 커피 당번 및 점심 일정 관리">
   <title>Coffee Calendar</title>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-pwa-v10">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-pwa-v10">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-pwa-v11">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-pwa-v11">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260911-pwa-v10">
+  <link rel="stylesheet" href="./styles.css?v=20260911-pwa-v11">
 </head>
 <body>
 <header>
@@ -23,7 +23,7 @@
     ☕ Coffee Calendar
   </div>
 
-  <div style="
+  <div class="header-actions" style="
       display:flex;
       gap:6px;
       align-items:center;
@@ -61,7 +61,7 @@
     <p>iPhone: Safari 공유 → 홈 화면에 추가 → ‘웹 앱으로 열기’를 켜고 추가하세요.</p>
     <p>Galaxy: Chrome 메뉴 → 홈 화면에 추가 → 설치를 선택하세요. 메뉴 이름은 브라우저 버전에 따라 다를 수 있습니다.</p>
     <p>기존 아이콘이 브라우저로 열리면 기존 바로가기를 삭제하고 이 페이지에서 다시 추가하세요. 홈 화면의 새 아이콘으로 실행합니다.</p>
-    <small>앱 버전: 20260911-pwa-v10 · 일정 조회·저장에는 인터넷 연결이 필요합니다.</small>
+    <small>앱 버전: 20260911-pwa-v11 · 일정 조회·저장에는 인터넷 연결이 필요합니다.</small>
   </details>
 
 
@@ -753,7 +753,7 @@
 
 </dialog>
 
-<dialog id="lunchEditDialog" aria-labelledby="lunchEditTitle"><form id="lunchEditForm"><h2 id="lunchEditTitle">식당 이름</h2><label for="lunchRestaurant">식당 이름 (30자 이내)</label><input id="lunchRestaurant" type="text" maxlength="30" autocomplete="off"><button type="submit">저장</button> <button id="lunchEditCancel" type="button" class="secondary">취소</button></form></dialog>
+<dialog id="lunchEditDialog" aria-labelledby="lunchEditTitle"><form id="lunchEditForm"><h2 id="lunchEditTitle">식당 이름</h2><label for="lunchRestaurant">식당 이름 (30자 이내)</label><input id="lunchRestaurant" type="text" maxlength="30" autocomplete="off"><div class="dialog-actions"><button type="submit">저장</button><button id="lunchEditCancel" type="button" class="secondary">취소</button></div></form></dialog>
 <dialog id="calendarAddDialog" aria-labelledby="calendarAddTitle">
   <h2 id="calendarAddTitle">Google Calendar 추가·알림 설정</h2>
   <p id="calendarAccount"></p>
@@ -770,7 +770,7 @@
   <button id="closeCalendarAdd" type="button">닫기</button>
 </dialog>
 <dialog id="colorDialog"><h2>내 표시 색상</h2><p>선택한 색상은 모든 구성원의 달력에 반영됩니다.</p><div id="colorChoices"></div><button type="button" id="closeColor">닫기</button></dialog>
-<script src="./app.js?v=20260911-pwa-v10"></script>
+<script src="./app.js?v=20260911-pwa-v11"></script>
 <script>
 (function () {
   let registration;

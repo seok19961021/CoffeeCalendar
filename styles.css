@@ -782,3 +782,47 @@ body input, body select, body textarea { font-size:max(16px, 1rem); }
 .day .day-lunch {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:4px;padding-top:3px;border-top:1px dashed #cbb7a7;color:#654533;font-size:10px;white-space:normal;overflow-wrap:anywhere;line-height:1.3;}
 .lunch-detail {padding:10px;border-radius:8px;background:#f5eadc;font-weight:700;overflow-wrap:anywhere;}
 
+/* 버튼 사이 여백 확보. 날짜 격자와 기존 메뉴 순서는 유지한다. */
+#message {position:static;}
+nav {gap:8px;padding:10px 0;margin-bottom:20px;}
+nav button {min-height:44px;}
+.quick {gap:12px;}
+.quick button {min-height:48px;padding:12px 10px;}
+.toolbar {gap:10px;row-gap:12px;}
+.row {gap:10px;row-gap:12px;padding-top:12px;padding-bottom:12px;}
+.row button {min-height:44px;}
+.queueRow button {margin-top:6px;margin-bottom:6px;}
+#identityGate > button {margin-top:8px;margin-right:8px;}
+form > button + button {margin-left:8px;}
+dialog {padding:20px;}
+dialog .dialog-actions {display:flex;gap:12px;margin-top:18px;}
+dialog .dialog-actions > button {flex:1;width:auto;min-height:44px;}
+dialog > button {margin-top:12px;}
+#colorChoices {gap:16px;padding:4px;}
+.lunch-settings {gap:12px;flex-wrap:wrap;}
+#lunchSpin {margin-top:18px;min-height:48px;}
+.calendar-connect {margin-bottom:16px;}
+header .header-actions {gap:10px !important;}
+header #memberColor {width:32px;height:32px;min-height:32px;}
+@media(max-width:540px) {
+  header {gap:10px;padding-bottom:12px;}
+  header .brand {flex-basis:100%;}
+  header .header-actions {width:100%;}
+  header button {min-height:44px;padding:9px 12px;}
+  header #refresh {width:44px;min-height:44px;}
+  nav {gap:8px;}
+  nav button {padding:10px 3px;font-size:12px;}
+  main {padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));}
+  #calendar > .toolbar {display:grid;grid-template-columns:40px minmax(82px,1fr) minmax(65px,1fr) 40px 44px;gap:6px;align-items:center;}
+  #calendar > .toolbar label {gap:4px;font-size:11px;min-width:0;white-space:nowrap;}
+  #calendar > .toolbar button {padding:8px 2px;min-width:0;min-height:44px;}
+  #calendar > .toolbar input {width:64px;min-width:0;padding:8px 5px;appearance:textfield;}
+  #calendar > .toolbar select {width:56px;max-width:100%;min-width:0;padding:8px 3px;}
+  #calendar > .toolbar input::-webkit-inner-spin-button {appearance:none;margin:0;}
+}
+@media(max-width:350px) {
+  #calendar > .toolbar {grid-template-columns:36px minmax(76px,1fr) minmax(61px,1fr) 36px 40px;gap:4px;}
+  #calendar > .toolbar label {font-size:10px;}
+  #calendar > .toolbar input {width:60px;}
+}
+

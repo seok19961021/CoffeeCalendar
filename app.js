@@ -1360,13 +1360,6 @@ function renderCalendar() {
       }
 
 
-      const lunchRecord = data.lunchHistory?.[date];
-      if (lunchRecord) {
-        const label = node('small', '🍽 ' + lunchRecord.name, 'day-lunch');
-        label.title = '점심: ' + lunchRecord.name;
-        b.append(label);
-        b.setAttribute('aria-label', b.getAttribute('aria-label') + ' · 점심 ' + lunchRecord.name);
-      }
       $('grid').append(
         b
       );
