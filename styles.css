@@ -703,3 +703,17 @@ body { padding-bottom: env(safe-area-inset-bottom); }
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+
+/* 설치 앱의 노치·홈 표시기, 가로 화면과 작은 폭 */
+body { min-height:100vh; min-height:100dvh; }
+header { padding-top:calc(16px + env(safe-area-inset-top, 0px)); }
+main { padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); }
+nav { top:env(safe-area-inset-top, 0px); }
+@media (display-mode: standalone) { header { padding-top:calc(16px + env(safe-area-inset-top, 0px)); } }
+#connectionStatus, #appUpdate { padding:12px; margin-bottom:12px; border:1px solid var(--line); border-radius:10px; background:var(--cream); }
+.install-help { margin-bottom:16px; color:var(--text-sub); font-size:.85rem; }
+.install-help summary { cursor:pointer; min-height:32px; }
+.install-help p { margin:8px 0; }
+@media(max-width:380px) { header { gap:6px; flex-wrap:wrap; } .brand { font-size:1rem; } }
+

@@ -308,101 +308,48 @@ const API_URL =
   'https://coffee-calendar-api.s-eok96.workers.dev/';
 
 
-/*
- * GitHub Pages → Apps Script HTTP API
- *
- * text/plain을 사용해 CORS preflight를 피한다.
- * Apps Script의 302 redirect는 follow로 처리한다.
- */
-async function rpc(
-  method,
-  ...args
-) {
-
-  let response;
-
-  try {
-    response = await fetch(
-      API_URL,
-      {
-        method: 'POST',
-        redirect: 'follow',
-
-        /*
-         * application/json 사용 시 브라우저가 OPTIONS
-         * preflight를 발생시킬 수 있으므로 text/plain 사용.
-         */
-        headers: {
-          'Content-Type':
-            'text/plain;charset=utf-8'
-        },
-
-        body: JSON.stringify({
-          method: method,
-          args: args
-        }),
-
-        /*
-         * Apps Script API는 자체 PIN/세션 토큰으로 인증하므로
-         * Google 제3자 쿠키에 의존하지 않는다.
-         */
-        credentials: 'omit',
-
-        cache: 'no-store'
+/* GitHub PWA → Cloudflare → Apps Script. 읽기만 한 번 재시도한다. */
+async function rpc(method, ...args) {
+  const attempts = (method === 'getData' || method === 'ping') ? 2 : 1;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 35000);
+    try {
+      if (navigator.onLine === false) throw new Error('OFFLINE');
+      const response = await fetch(API_URL, {
+        method: 'POST', mode: 'cors', redirect: 'error',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ method, args }), credentials: 'omit',
+        cache: 'no-store', signal: controller.signal
+      });
+      const text = await response.text();
+      let payload;
+      try { payload = JSON.parse(text); } catch (_) {
+        const error = new Error('서버가 올바른 응답을 보내지 않았습니다. 잠시 후 새로고침해 주세요. (HTTP ' + response.status + ')');
+        error.retryable = response.status >= 500; throw error;
       }
-    );
-
-  } catch (networkError) {
-
-    throw new Error(
-      '서버 연결에 실패했습니다: ' +
-      (networkError && networkError.message
-        ? networkError.message
-        : String(networkError))
-    );
+      if (!response.ok || !payload || payload.ok !== true) {
+        const error = new Error(payload && payload.error || '서버 응답 오류 (HTTP ' + response.status + ')');
+        error.retryable = response.status >= 500; throw error;
+      }
+      return payload.data;
+    } catch (error) {
+      const networkFailure = error.name === 'AbortError' || error instanceof TypeError;
+      if (attempt + 1 < attempts && navigator.onLine !== false && (networkFailure || error.retryable)) {
+        message('연결을 다시 확인하고 있습니다.');
+        continue;
+      }
+      if (error.message === 'OFFLINE' || navigator.onLine === false) {
+        throw new Error('인터넷 연결이 없습니다. Wi-Fi 또는 모바일 데이터를 연결한 뒤 새로고침해 주세요.');
+      }
+      if (networkFailure) {
+        throw new Error((error.name === 'AbortError' ? '서버 응답 시간이 초과되었습니다.' : '서버에 연결하지 못했습니다.') +
+          (attempts === 1 ? ' 처리 여부가 불확실하므로 새로고침하여 결과를 확인한 뒤 다시 시도해 주세요.' : ' 연결을 확인하고 새로고침해 주세요. 계속 실패하면 Wi-Fi와 모바일 데이터를 바꾸어 확인해 주세요.'));
+      }
+      throw error;
+    } finally { clearTimeout(timer); }
   }
-
-
-  if (!response.ok) {
-    throw new Error(
-      '서버 응답 오류 (' +
-      response.status +
-      '). Apps Script 웹앱 배포 권한을 확인하세요.'
-    );
-  }
-
-
-  let payload;
-
-  try {
-    payload =
-      await response.json();
-
-  } catch (parseError) {
-
-    throw new Error(
-      '서버 응답을 해석하지 못했습니다. Apps Script를 새 버전으로 다시 배포했는지 확인하세요.'
-    );
-  }
-
-
-  if (
-    !payload ||
-    payload.ok !== true
-  ) {
-
-    throw new Error(
-      payload &&
-      payload.error
-        ? payload.error
-        : '서버 처리 중 오류가 발생했습니다.'
-    );
-  }
-
-
-  return payload.data;
 }
-
 
 /* =========================================================
    접근 화면 제어
@@ -3138,3 +3085,15 @@ for (
    ========================================================= */
 
 load();
+
+
+// 저장 중인 입력은 유지하고, 연결 상태만 안내한다.
+function updateConnectionStatus() {
+  const status = $('connectionStatus');
+  status.hidden = navigator.onLine !== false;
+  status.textContent = status.hidden ? '' : '오프라인입니다. 연결 후 새로고침해 주세요. 일정 저장은 인터넷 연결이 필요합니다.';
+}
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
+updateConnectionStatus();
+

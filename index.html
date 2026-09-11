@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3B241D">
   <meta name="application-name" content="커피당번">
   <meta name="apple-mobile-web-app-title" content="커피당번">
@@ -11,10 +11,10 @@
   <meta name="description" content="우리 부서 커피 당번 및 점심 일정 관리">
   <title>우리 부서 커피 당번</title>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-api-v4">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-api-v4">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-pwa-v5">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-pwa-v5">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260911-api-v4">
+  <link rel="stylesheet" href="./styles.css?v=20260911-pwa-v5">
 </head>
 <body>
 <header>
@@ -50,6 +50,18 @@
 
 
 <main>
+  <aside id="connectionStatus" role="status" aria-live="polite" hidden></aside>
+  <aside id="appUpdate" hidden>
+    새 버전이 준비되었습니다. 입력 중인 내용을 저장한 뒤 적용하세요.
+    <button type="button" id="applyUpdate" class="secondary">새 버전 적용</button>
+  </aside>
+  <details class="install-help">
+    <summary>홈 화면 앱 설치 안내</summary>
+    <p>iPhone: Safari 공유 → 홈 화면에 추가 → ‘웹 앱으로 열기’를 켜고 추가하세요.</p>
+    <p>Galaxy: Chrome 메뉴 → 홈 화면에 추가 → 설치를 선택하세요. 메뉴 이름은 브라우저 버전에 따라 다를 수 있습니다.</p>
+    <p>기존 아이콘이 브라우저로 열리면 기존 바로가기를 삭제하고 이 페이지에서 다시 추가하세요. 홈 화면의 새 아이콘으로 실행합니다.</p>
+    <small>앱 버전: 20260911-pwa-v5 · 일정 조회·저장에는 인터넷 연결이 필요합니다.</small>
+  </details>
 
 
   <div id="message" role="status" aria-live="polite"></div>
@@ -728,15 +740,31 @@
 
 </dialog>
 
-<script src="./app.js?v=20260911-api-v4"></script>
+<script src="./app.js?v=20260911-pwa-v5"></script>
 <script>
+(function () {
+  let registration;
+  const updateBox = document.getElementById('appUpdate');
+  function showUpdate() { if (registration && registration.waiting) updateBox.hidden = false; }
+  document.getElementById('applyUpdate').addEventListener('click', function () {
+    if (!registration || !registration.waiting) { location.reload(); return; }
+    navigator.serviceWorker.addEventListener('controllerchange', function () { location.reload(); }, { once: true });
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  });
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(function(err) {
-        console.warn('Service Worker 등록 실패:', err);
-      });
+    window.addEventListener('load', async function () {
+      try {
+        registration = await navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' });
+        showUpdate();
+        registration.addEventListener('updatefound', function () {
+          const installing = registration.installing;
+          if (installing) installing.addEventListener('statechange', showUpdate);
+        });
+        await registration.update();
+      } catch (err) { console.warn('앱 업데이트 확인 실패:', err); }
     });
   }
+})();
 </script>
-</body>
-</html>
+</body></html>
+
