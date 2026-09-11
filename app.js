@@ -1125,6 +1125,12 @@ function render() {
    ========================================================= */
 
 function renderCalendar() {
+  const holidayStatus = data.holidayStatus || {};
+  const statusElement = $('holidayStatus');
+  if (statusElement) statusElement.textContent = holidayStatus.warning ||
+    ((holidayStatus.years || []).includes(String(year))
+      ? '대한민국 공휴일 자동 반영 · 원본 자료를 주기적으로 확인합니다'
+      : '이 연도의 자동 공휴일 자료가 아직 없습니다. 필요한 날짜는 관리자 휴무일에서 추가해 주세요.');
 
   $('legend')
     .replaceChildren();
@@ -1208,6 +1214,10 @@ function renderCalendar() {
         );
 
 
+      const holiday = (data.holidays || []).concat(data.autoHolidays || []).find(h => h.date === date);
+      b.classList.toggle('holiday', !!holiday);
+      if (holiday) b.title = holiday.name;
+
       b.classList.toggle(
         'closed',
         !!day.reason
@@ -1236,7 +1246,7 @@ function renderCalendar() {
                 day.buyer,
                 day
               )
-            : day.reason
+            : (holiday ? holiday.name : day.reason)
         )
       );
 
@@ -1270,7 +1280,7 @@ function renderCalendar() {
                 day.buyer,
                 day
               )
-            : day.reason
+            : (holiday ? holiday.name : day.reason)
         )
       );
 

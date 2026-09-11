@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '20260911-pwa-v5';
+const VERSION = '20260911-pwa-v6';
 const CACHE = 'coffee-pwa-' + VERSION;
 const BASE = new URL('./', self.location.href);
 const SHELL = ['./', './index.html', './app.js?v=' + VERSION, './styles.css?v=' + VERSION,
