@@ -4,7 +4,7 @@
  * 앱 껍데기만 캐시한다.
  * PIN, 세션 토큰, 일정 데이터, Apps Script API 응답은 캐시하지 않는다.
  */
-const CACHE = 'coffee-pwa-20260911-api-v1';
+const CACHE = 'coffee-pwa-20260911-api-v2';
 const BASE = new URL('./', self.location.href);
 
 const FILES = [
