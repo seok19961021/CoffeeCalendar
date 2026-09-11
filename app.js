@@ -355,7 +355,10 @@ async function rpc(
   } catch (networkError) {
 
     throw new Error(
-      '서버 연결에 실패했습니다. 인터넷 연결 또는 Apps Script 배포 상태를 확인하세요.'
+      '서버 연결에 실패했습니다: ' +
+      (networkError && networkError.message
+        ? networkError.message
+        : String(networkError))
     );
   }
 
