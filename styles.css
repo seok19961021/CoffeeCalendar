@@ -826,3 +826,47 @@ header #memberColor {width:32px;height:32px;min-height:32px;}
   #calendar > .toolbar input {width:60px;}
 }
 
+/* iOS 기본 select 외관을 해제하고 연도/월의 실제 박스 크기를 동일하게 고정한다. */
+#calendar > .toolbar #year,
+#calendar > .toolbar #month {
+  box-sizing:border-box;
+  -webkit-appearance:none;appearance:none;
+  width:68px;min-width:68px;max-width:68px;flex:none;
+  height:44px;min-height:44px;max-height:44px;
+  margin:0;padding:0 8px;
+  border:1px solid #CDBDB3;border-radius:8px;
+  background-color:#fff;color:var(--text-main);
+  font-family:inherit;font-size:16px;font-weight:600;line-height:normal;
+}
+#calendar > .toolbar #year {text-align:center;appearance:textfield;}
+#calendar > .toolbar #year::-webkit-inner-spin-button,
+#calendar > .toolbar #year::-webkit-outer-spin-button {-webkit-appearance:none;margin:0;}
+#calendar > .toolbar #month {
+  padding-right:19px;
+  background-image:linear-gradient(45deg,transparent 50%,#79665c 50%),linear-gradient(135deg,#79665c 50%,transparent 50%);
+  background-position:calc(100% - 10px) center,calc(100% - 6px) center;
+  background-size:4px 4px;background-repeat:no-repeat;
+}
+#calendar > .toolbar button {font-size:13px;font-weight:600;line-height:1.3;}
+#detail {padding:18px;}
+#detail h2 {font-size:17px;line-height:1.4;margin-bottom:16px;}
+#detail p {font-size:14px;line-height:1.55;margin-bottom:12px;}
+#detail .row {font-size:14px;padding-top:12px;padding-bottom:14px;}
+#detail > button {
+  display:inline-flex;align-items:center;justify-content:center;
+  margin:16px 0 0;min-height:44px;max-width:100%;
+  padding:9px 14px;font-size:13px;font-weight:600;line-height:1.35;
+}
+@media(max-width:540px) {
+  #calendar > .toolbar {grid-template-columns:36px 94px 83px 36px 44px;gap:6px;justify-content:center;align-items:center;}
+  #calendar > .toolbar label {font-size:11px;font-weight:600;gap:4px;white-space:nowrap;}
+  #calendar > .toolbar button {font-size:12px;min-height:44px;}
+  .quick button {min-height:44px;padding:10px 12px;font-size:13px;line-height:1.4;}
+  .calendar-connect button {min-height:44px;padding:9px 13px;font-size:12px;font-weight:600;}
+  .row button {font-size:13px;padding:9px 12px;}
+}
+@media(max-width:350px) {
+  #calendar > .toolbar {grid-template-columns:32px 68px 68px 32px 40px;gap:5px;align-items:end;}
+  #calendar > .toolbar label {display:grid;grid-template-rows:14px 44px;gap:4px;text-align:center;justify-content:center;}
+}
+
