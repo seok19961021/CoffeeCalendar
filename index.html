@@ -1,359 +1,742 @@
 <!doctype html>
 <html lang="ko">
-
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3B241D">
   <meta name="application-name" content="커피당번">
-
   <meta name="apple-mobile-web-app-title" content="커피당번">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="우리 부서 커피 당번 및 점심 일정 관리">
+  <title>우리 부서 커피 당번</title>
 
-  <meta
-    name="description"
-    content="우리 부서 커피 캘린더"
-  >
-
-  <title>커피당번</title>
-
-  <!-- iPhone 홈 화면 아이콘 -->
-  <link
-    rel="apple-touch-icon"
-    sizes="180x180"
-    href="./apple-touch-icon.png?v=20260911"
-  >
-
-  <!-- 일반 브라우저 / Android 아이콘 -->
-  <link
-    rel="icon"
-    type="image/png"
-    sizes="192x192"
-    href="./icon-192.png?v=20260911"
-  >
-
-  <link
-    rel="manifest"
-    href="./manifest.webmanifest"
-  >
-
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-
-      margin: 0;
-      padding: 0;
-
-      overflow: hidden;
-
-      background: #F7F2EE;
-
-      font-family:
-        system-ui,
-        -apple-system,
-        "Malgun Gothic",
-        sans-serif;
-    }
-
-
-    /* =====================================================
-       일반 브라우저에서 보이는 설치 안내
-       ===================================================== */
-
-    #installPage {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-
-      display: grid;
-      place-items: center;
-
-      padding:
-        max(24px, env(safe-area-inset-top))
-        max(20px, env(safe-area-inset-right))
-        max(24px, env(safe-area-inset-bottom))
-        max(20px, env(safe-area-inset-left));
-
-      color: #3B241D;
-    }
-
-    #installPage main {
-      width: min(100%, 480px);
-    }
-
-    .identity {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .identity img {
-      width: 112px;
-      height: 112px;
-
-      border-radius: 24px;
-
-      box-shadow:
-        0 8px 24px
-        rgba(59, 36, 29, 0.14);
-    }
-
-    h1 {
-      margin: 18px 0 8px;
-
-      font-size: 1.65rem;
-      line-height: 1.3;
-    }
-
-    p {
-      margin: 8px 0;
-
-      color: #69544B;
-    }
-
-    article {
-      margin: 24px 0;
-      padding: 20px;
-
-      background: #FFFFFF;
-
-      border: 1px solid #E4D6CE;
-      border-radius: 16px;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-
-      font-size: 1rem;
-    }
-
-    ol {
-      padding-left: 22px;
-      margin: 0;
-    }
-
-    li {
-      margin: 10px 0;
-    }
-
-    .small {
-      font-size: 0.875rem;
-    }
-
-    .device {
-      font-weight: 750;
-      color: #3B241D;
-    }
-
-    .notice {
-      padding: 12px;
-
-      background: #EEE3DA;
-
-      border-radius: 10px;
-    }
-
-    .url {
-      word-break: break-all;
-
-      font-size: 0.8rem;
-      color: #765F51;
-    }
-
-
-    /* =====================================================
-       실제 커피 앱
-       ===================================================== */
-
-    #appPage {
-      position: fixed;
-
-      inset: 0;
-
-      display: none;
-
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-
-      background: #F7F2EE;
-    }
-
-    #coffeeApp {
-      display: block;
-
-      width: 100%;
-      height: 100%;
-
-      margin: 0;
-      padding: 0;
-
-      border: 0;
-
-      background: #F7F2EE;
-    }
-
-
-    /* 홈 화면 앱 모드 */
-    @media (display-mode: standalone) {
-
-      #installPage {
-        display: none;
-      }
-
-      #appPage {
-        display: block;
-      }
-
-    }
-
-  </style>
-
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260911-api">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=20260911-api">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css?v=20260911-api">
 </head>
-
-
 <body>
+<header>
+
+  <div class="brand">
+    ☕ 우리 부서 커피
+  </div>
+
+  <div style="
+      display:flex;
+      gap:6px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    ">
+
+    <span id="loginUser" style="
+        font-size:.85rem;
+        font-weight:700;
+      "></span>
+
+    <button id="logout" class="subtle" type="button" hidden="">
+      로그아웃
+    </button>
+
+    <button id="refresh" class="subtle" type="button">
+      새로고침
+    </button>
+
+  </div>
+
+</header>
 
 
-  <!-- =====================================================
-       Safari / Chrome에서 직접 접속했을 때
-       ===================================================== -->
+<main>
 
-  <div id="installPage">
 
-    <main>
+  <div id="message" role="status" aria-live="polite"></div>
 
-      <div class="identity">
 
-        <img
-          src="./icon-192.png?v=20260911"
-          width="112"
-          height="112"
-          alt="커피당번 아이콘"
-        >
+  
 
-        <h1>
-          우리 부서 커피
-        </h1>
+  <article id="accessGate" hidden="">
 
-        <p>
-          오늘의 담당과 점심 일정을 확인하세요.
-        </p>
+    <h1>
+      부서 커피 캘린더 접속
+    </h1>
+
+    <form id="accessForm">
+
+      <label>
+        부서 접속 암호
+
+        <input id="accessCode" type="password" autocomplete="current-password" required="">
+
+      </label>
+
+      <button>
+        접속
+      </button>
+
+    </form>
+
+    <p class="muted">
+      관리자에게 받은 부서 공용 암호를 입력하세요.
+    </p>
+
+  </article>
+
+
+  
+
+  <article id="identityGate" hidden>
+
+    <h1>
+      사용자 인증
+    </h1>
+
+    <p class="muted">
+      본인 이름을 선택하고 개인 PIN 6자리를 입력하세요.
+      PIN이 아직 없는 경우 최초 1회 직접 설정할 수 있습니다.
+    </p>
+
+
+    <label>
+      사용자
+
+      <select id="loginMember"></select>
+
+    </label>
+
+
+    <label>
+      개인 PIN
+
+      <input id="loginPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" placeholder="숫자 6자리">
+
+    </label>
+
+
+    <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+      ">
+
+      <button id="memberLogin" type="button">
+        로그인
+      </button>
+
+      <button id="memberRegister" type="button" class="secondary">
+        최초 PIN 설정
+      </button>
+
+    </div>
+
+
+    <p id="pinStatus" class="muted" style="margin-top:12px"></p>
+
+  </article>
+
+
+  
+
+  <nav aria-label="주 메뉴" hidden="">
+
+    <button data-page="today" class="selected">
+      오늘
+    </button>
+
+    <button data-page="calendar">
+      캘린더
+    </button>
+
+    <button data-page="mine">
+      내 일정
+    </button>
+
+    <button data-page="admin">
+      관리
+    </button>
+
+  </nav>
+
+
+  
+
+  <section id="today" class="page" hidden="">
+
+    <article class="hero">
+
+      <div id="todayDate" class="eyebrow"></div>
+
+      <h1>
+        오늘의 커피 담당
+      </h1>
+
+      <div id="todayBuyer" class="buyer">
+        불러오는 중…
+      </div>
+
+      <p id="todayReason"></p>
+
+
+      <div class="stats">
+
+        <div>
+          점심 참석
+          <strong id="attending">
+            —
+          </strong>
+        </div>
+
+        <div>
+          점심 불참
+          <strong id="absent">
+            —
+          </strong>
+        </div>
 
       </div>
 
-
-      <article>
-
-        <h2>
-          홈 화면에 추가하세요
-        </h2>
-
-        <ol>
-
-          <li>
-            <span class="device">
-              iPhone · Safari
-            </span>
-            <br>
-            공유 버튼 → 홈 화면에 추가 → 추가
-          </li>
-
-          <li>
-            <span class="device">
-              Galaxy · Chrome
-            </span>
-            <br>
-            오른쪽 위 ⋮ → 홈 화면에 추가 또는 앱 설치
-          </li>
-
-          <li>
-            <span class="device">
-              Galaxy · 삼성 인터넷
-            </span>
-            <br>
-            메뉴 → 현재 페이지 추가 → 홈 화면
-          </li>
-
-        </ol>
+    </article>
 
 
-        <p class="small notice">
-          기존 커피당번 바로가기가 있다면 삭제한 뒤
-          현재 페이지에서 다시 홈 화면에 추가하세요.
-        </p>
+    <article>
+
+      <h2>
+        다음 커피 담당 예정
+      </h2>
+
+      <div id="nextBuyer"></div>
+
+    </article>
 
 
-        <p class="url">
-          seok19961021.github.io/CoffeeCalendar/
-        </p>
+    <div class="quick">
 
-      </article>
+      <button id="quickAdd">
+        내 일정 등록
+      </button>
 
-    </main>
+      <button data-page="calendar">
+        커피 캘린더
+      </button>
 
-  </div>
+      <button data-page="mine">
+        내 일정
+      </button>
 
+      <button data-page="admin">
+        관리
+      </button>
 
-  <!-- =====================================================
-       홈 화면에서 실행했을 때 Apps Script 표시
-       ===================================================== -->
-
-  <div id="appPage">
-
-    <iframe
-      id="coffeeApp"
-      src="https://script.google.com/macros/s/AKfycbyL5LnoZy2BM7dOpA23IMR3bJrdmXuhmnqdcNfQmDz_K7mXg3awVP7RsHxwxwV7EcE/exec"
-      title="우리 부서 커피"
-      allow="fullscreen"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-
-  </div>
+    </div>
 
 
-  <script>
+    <article>
 
-    /*
-     * iPhone의 standalone 여부를
-     * CSS 외에 JS에서도 확인
-     */
+      <h2>
+        오늘 점심 일정
+      </h2>
 
-    const standalone =
-      window.matchMedia('(display-mode: standalone)').matches
-      ||
-      window.navigator.standalone === true;
+      <div id="todaySchedules"></div>
+
+    </article>
 
 
-    if (standalone) {
+    <p class="muted">
+      미래 담당은 예정입니다.
+      다른 구성원의 일정은 확인할 수 있지만
+      등록·수정·삭제는 본인 일정만 가능합니다.
+    </p>
 
-      document
-        .getElementById('installPage')
-        .style.display = 'none';
-
-
-      document
-        .getElementById('appPage')
-        .style.display = 'block';
-
-    }
-
-  </script>
+  </section>
 
 
+  
+
+  <section id="calendar" class="page" hidden="">
+
+    <div class="toolbar">
+
+      <button id="prev" aria-label="이전 달">
+        ‹
+      </button>
+
+      <label>
+        연도
+
+        <input id="year" type="number" min="1900" max="2200">
+
+      </label>
+
+      <label>
+        월
+        <select id="month"></select>
+      </label>
+
+      <button id="next" aria-label="다음 달">
+        ›
+      </button>
+
+      <button id="thisMonth">
+        오늘
+      </button>
+
+    </div>
+
+
+    <div id="legend" class="legend"></div>
+
+
+    <div class="weekdays">
+
+      <span>일</span>
+      <span>월</span>
+      <span>화</span>
+      <span>수</span>
+      <span>목</span>
+      <span>금</span>
+      <span>토</span>
+
+    </div>
+
+
+    <div id="grid" class="calendar-grid"></div>
+
+
+    <p class="muted">
+      날짜를 누르면 참석자와 일정,
+      변경된 순번을 확인할 수 있습니다.
+    </p>
+
+
+    <article id="detail">
+      <h2>
+        날짜를 선택하세요
+      </h2>
+    </article>
+
+  </section>
+
+
+  
+
+  <section id="mine" class="page" hidden="">
+
+    <div class="toolbar">
+
+      <h1>
+        내 일정
+      </h1>
+
+      <button id="mineAdd">
+        일정 등록
+      </button>
+
+    </div>
+
+
+    <p>
+      사용자 :
+      <strong id="myName">
+        -
+      </strong>
+    </p>
+
+
+    <p class="muted">
+      본인의 일정만 등록·수정·삭제할 수 있습니다.
+    </p>
+
+
+    <div id="myList"></div>
+
+  </section>
+
+
+  
+
+  <section id="admin" class="page" hidden="">
+
+    <h1>
+      관리
+    </h1>
+
+
+    <article>
+
+      <h2>
+        관리자 인증
+      </h2>
+
+      <p id="ownerInfo"></p>
+
+
+      <label>
+        관리자 비밀번호
+
+        <input type="password" id="adminPassword" autocomplete="current-password">
+
+      </label>
+
+
+      <button id="adminLoginButton" type="button">
+        관리자 인증
+      </button>
+
+
+      <p id="adminAuthStatus" class="muted" style="margin-top:10px"></p>
+
+    </article>
+
+
+    <article id="teamSetup" hidden="">
+
+      <h2>
+        부서 접속 암호 설정
+      </h2>
+
+      <p class="muted">
+        최초 공유 전에 12자 이상 암호를 설정하고
+        부서원에게 별도로 알려주세요.
+      </p>
+
+      <p id="teamStatus"></p>
+
+
+      <form id="teamForm">
+
+        <label>
+          새 부서 접속 암호
+
+          <input id="teamPassword" type="password" minlength="12" maxlength="100" autocomplete="new-password" required="">
+
+        </label>
+
+        <button>
+          접속 암호 설정
+        </button>
+
+      </form>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        현재 대기 순번
+      </h2>
+
+      <p class="muted">
+        오늘 배정 전 기준입니다. 같은 이름의 중복 표시는 누적된 미수행 당번입니다.
+      </p>
+
+      <ol id="queueList"></ol>
+
+
+      <button id="saveQueue">
+        표시된 순서로 적용
+      </button>
+
+      <button id="resetQueue" class="secondary">
+        구성원 기본 순서로 정렬
+      </button>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        구성원
+      </h2>
+
+      <p class="muted">
+        PIN 초기화를 하면 해당 구성원의 로그인 상태가 모두 해제되며,
+        다음 접속 시 새 PIN을 설정해야 합니다.
+      </p>
+
+
+      <div id="memberList"></div>
+
+
+      <form id="memberForm">
+
+        <label>
+          새 구성원 이름
+
+          <input id="newName" maxlength="30" required="">
+
+        </label>
+
+        <button>
+          마지막 순번에 추가
+        </button>
+
+      </form>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        휴무일
+      </h2>
+
+      <p class="muted">
+        토·일요일은 자동 제외됩니다.
+        대한민국 공휴일과 회사 휴무일을 등록하세요.
+      </p>
+
+
+      <form id="holidayForm">
+
+        <label>
+          날짜
+
+          <input id="holidayDate" type="date" required="">
+
+        </label>
+
+        <label>
+          휴무일 이름
+
+          <input id="holidayName" maxlength="60" required="">
+
+        </label>
+
+        <button>
+          휴무일 저장
+        </button>
+
+      </form>
+
+
+      <div id="holidayList"></div>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        담당자 수동 지정
+      </h2>
+
+      <p class="muted">
+        선택한 참석자의 당번 1회를 수행합니다. 미수행분이 있으면 1회 차감하고, 없으면 맨 뒤로 이동합니다.
+      </p>
+
+
+      <form id="overrideForm">
+
+        <label>
+          날짜
+
+          <input id="overrideDate" type="date" required="">
+
+        </label>
+
+        <label>
+          담당자
+
+          <select id="overrideMember">
+          </select>
+
+        </label>
+
+        <button>
+          적용
+        </button>
+
+      </form>
+
+
+      <div id="overrideList"></div>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        운영 설정
+      </h2>
+
+
+      <form id="startForm">
+
+        <label>
+          최초 운영 시작일
+
+          <input id="startDate" type="date" required="">
+
+        </label>
+
+        <button>
+          시작일 변경
+        </button>
+
+      </form>
+
+
+      <p class="muted">
+        과거 확정 기록이 생긴 뒤에는
+        시작일을 바꿀 수 없습니다.
+      </p>
+
+
+      <button id="undo" class="secondary">
+        마지막 변경 되돌리기
+      </button>
+
+    </article>
+
+
+    <article>
+
+      <h2>
+        최근 변경 기록
+      </h2>
+
+      <div id="audit"></div>
+
+    </article>
+
+  </section>
+
+
+</main>
+
+
+
+
+<dialog id="absenceDialog">
+
+  <form id="absenceForm"><p id="formMessage" role="status" aria-live="polite"></p>
+
+    <div class="toolbar">
+
+      <h2 id="absenceTitle">
+        일정 등록
+      </h2>
+
+      <button type="button" id="closeDialog" class="subtle">
+        닫기
+      </button>
+
+    </div>
+
+
+    <input type="hidden" id="absenceId">
+
+
+    <label>
+      사용자
+
+      <select id="absenceMember" required=""></select>
+
+    </label>
+
+
+    <p id="absenceOwnerMessage" class="muted">
+      일반 사용자는 본인 일정만 등록할 수 있습니다.
+    </p>
+
+
+    <label>
+      날짜
+
+      <input id="absenceDate" type="date" required="">
+
+    </label>
+
+
+    <label>
+      일정 유형
+
+      <select id="absenceType">
+
+        <option>
+          연차
+        </option>
+
+        <option>
+          오전반차
+        </option>
+
+        <option>
+          오후반차
+        </option>
+
+        <option>
+          출장
+        </option>
+
+        <option>
+          외근
+        </option>
+
+        <option>
+          기타
+        </option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+      점심 참석 여부
+
+      <select id="absenceLunch">
+
+        <option value="false">
+          점심 불참
+        </option>
+
+        <option value="true">
+          점심 참석
+        </option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+      비고
+
+      <textarea id="absenceNote" maxlength="300" rows="3"></textarea>
+
+    </label>
+
+
+    <p class="muted">
+      반차여도 점심에 참석한다면
+      ‘점심 참석’을 선택하세요.
+    </p>
+
+
+    <button type="submit">
+      일정 저장
+    </button>
+
+  </form>
+
+</dialog>
+
+<script src="./app.js?v=20260911-api"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(function(err) {
+        console.warn('Service Worker 등록 실패:', err);
+      });
+    });
+  }
+</script>
 </body>
-
 </html>
