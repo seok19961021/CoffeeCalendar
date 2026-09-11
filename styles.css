@@ -1,0 +1,705 @@
+:root{
+  font-family:system-ui,-apple-system,'Malgun Gothic',sans-serif;
+  color:#3A2A24;
+  background:#F7F2EE;
+  font-size:16px;
+  line-height:1.5;
+
+  /* Coffee Theme */
+  --espresso:#3B241D;
+  --dark-roast:#4A2F27;
+  --mocha:#6B4A3D;
+  --cappuccino:#8A6A5B;
+  --latte:#D8C8BD;
+  --cream:#F1E8E1;
+  --vanilla:#F7F2EE;
+  --caramel:#C78B5A;
+  --caramel-dark:#A96F43;
+
+  --accent:#6B4A3D;
+  --line:#D9CCC4;
+
+  --text-main:#3A2A24;
+  --text-sub:#79665C;
+  --card:#FFFFFF;
+  --closed:#EEE7E2;
+  --selected:#E7D7CB;
+  --focus:#C78B5A;
+}
+
+
+/* =========================
+   기본
+   ========================= */
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:var(--vanilla);
+  color:var(--text-main)
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px max(16px,calc((100vw - 960px)/2));
+  background:var(--espresso);
+  color:#fff;
+  border-bottom:1px solid #2E1B16
+}
+
+.brand{
+  font-weight:800;
+  font-size:1.15rem;
+  color:#fff
+}
+
+
+/* =========================
+   Main
+   ========================= */
+
+main{
+  max-width:960px;
+  margin:auto;
+  padding:16px 16px 40px
+}
+
+
+/* =========================
+   Navigation
+   ========================= */
+
+nav{
+  display:flex;
+  gap:6px;
+  margin-bottom:20px;
+  position:sticky;
+  top:0;
+  background:var(--vanilla);
+  padding:8px 0;
+  z-index:2
+}
+
+nav button{
+  flex:1;
+  background:var(--cream);
+  color:var(--dark-roast);
+  border:1px solid var(--line);
+  padding:10px 4px
+}
+
+nav button.selected{
+  background:var(--dark-roast);
+  color:#fff;
+  border-color:var(--dark-roast)
+}
+
+
+/* =========================
+   공통 요소
+   ========================= */
+
+button,
+input,
+select,
+textarea{
+  font:inherit
+}
+
+button{
+  cursor:pointer;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:var(--accent);
+  color:#fff;
+  min-height:44px;
+  padding:10px 15px;
+  font-weight:650;
+  touch-action:manipulation
+}
+
+button:hover{
+  filter:brightness(.94)
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:wait
+}
+
+.subtle,
+.secondary{
+  background:var(--cream);
+  color:var(--dark-roast);
+  border-color:var(--line)
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+  outline:3px solid var(--focus);
+  outline-offset:2px
+}
+
+
+/* =========================
+   제목
+   ========================= */
+
+h1,
+h2,
+p{
+  margin-top:0
+}
+
+h1{
+  font-size:1.35rem
+}
+
+h2{
+  font-size:1.05rem;
+  margin-bottom:12px
+}
+
+
+/* =========================
+   Card
+   ========================= */
+
+article{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin:16px 0;
+  overflow-wrap:anywhere;
+  box-shadow:0 2px 10px rgba(59,36,29,.04)
+}
+
+
+/* =========================
+   오늘의 커피 담당 Hero
+   ========================= */
+
+.hero{
+  background:
+    linear-gradient(
+      135deg,
+      var(--espresso) 0%,
+      var(--dark-roast) 55%,
+      var(--mocha) 100%
+    );
+  color:#fff;
+  border:0;
+  padding:26px;
+  box-shadow:0 8px 24px rgba(59,36,29,.16)
+}
+
+.eyebrow{
+  font-size:.95rem;
+  color:#E4D7CE;
+  margin-bottom:18px
+}
+
+.hero h1{
+  font-size:1.05rem;
+  font-weight:500;
+  color:#F1E8E1
+}
+
+.buyer{
+  font-size:clamp(2rem,8vw,3.3rem);
+  font-weight:850;
+  line-height:1.25;
+  margin:12px 0 20px;
+  color:#fff
+}
+
+.stats{
+  display:flex;
+  gap:28px;
+  border-top:1px solid rgba(255,255,255,.22);
+  padding-top:18px
+}
+
+.stats div{
+  flex:1;
+  font-size:.95rem
+}
+
+.stats strong{
+  display:block;
+  font-size:1.5rem;
+  margin-top:4px
+}
+
+
+/* =========================
+   빠른 실행
+   ========================= */
+
+.quick{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px
+}
+
+.quick button{
+  background:var(--caramel);
+  border-color:var(--caramel);
+  color:#fff
+}
+
+.quick button:hover{
+  background:var(--caramel-dark);
+  border-color:var(--caramel-dark)
+}
+
+
+/* =========================
+   보조 텍스트
+   ========================= */
+
+.muted{
+  font-size:.875rem;
+  color:var(--text-sub)
+}
+
+
+/* =========================
+   Toolbar
+   ========================= */
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.toolbar h1,
+.toolbar h2{
+  margin:0 auto 0 0
+}
+
+.toolbar label{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  margin:0
+}
+
+.toolbar input{
+  width:95px
+}
+
+.toolbar select{
+  width:72px
+}
+
+.toolbar #myMember{
+  width:140px
+}
+
+
+/* =========================
+   Form
+   ========================= */
+
+label{
+  display:block;
+  margin:12px 0;
+  font-size:.9rem;
+  font-weight:650;
+  color:var(--dark-roast)
+}
+
+input,
+select,
+textarea{
+  display:block;
+  width:100%;
+  min-height:44px;
+  background:#fff;
+  border:1px solid #CDBDB3;
+  border-radius:8px;
+  color:var(--text-main);
+  padding:9px 10px;
+  margin-top:5px;
+  max-width:100%
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--caramel)
+}
+
+.toolbar input,
+.toolbar select{
+  margin:0
+}
+
+
+/* =========================
+   Legend
+   ========================= */
+
+.legend{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  font-size:.875rem;
+  margin:16px 0
+}
+
+.legend span:before{
+  content:'';
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--member);
+  margin-right:5px
+}
+
+
+/* =========================
+   Calendar
+   ========================= */
+
+.weekdays,
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr))
+}
+
+.weekdays{
+  text-align:center;
+  padding:10px 0;
+  color:var(--text-sub);
+  font-size:.875rem
+}
+
+.calendar-grid{
+  gap:4px
+}
+
+.day{
+  color:var(--text-main);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:9px;
+  min-height:105px;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:8px 6px;
+  min-width:0;
+  overflow-wrap:anywhere;
+  font-size:.875rem;
+  font-weight:400
+}
+
+.day:hover{
+  background:#FBF7F4
+}
+
+.day b{
+  font-size:.875rem;
+  line-height:1.25;
+  border-left:3px solid var(--member,var(--cappuccino));
+  padding-left:5px;
+  margin:8px 0;
+  max-width:100%
+}
+
+.day small{
+  font-size:.75rem;
+  line-height:1.3;
+  color:var(--text-sub)
+}
+
+.day.closed{
+  background:var(--closed);
+  color:#9A8980
+}
+
+.day.current{
+  outline:2px solid var(--caramel);
+  outline-offset:-2px
+}
+
+.day.chosen{
+  background:var(--selected);
+  border-color:var(--cappuccino)
+}
+
+.day .date{
+  font-size:.875rem;
+  font-weight:700
+}
+
+
+/* =========================
+   리스트 Row
+   ========================= */
+
+.row{
+  padding:12px 0;
+  border-bottom:1px solid #E8DDD7;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap
+}
+
+.row>div:first-child{
+  flex:1;
+  min-width:120px
+}
+
+.row p{
+  margin:4px 0;
+  font-size:.875rem
+}
+
+.row button{
+  padding:8px 12px
+}
+
+.row input{
+  flex:1;
+  min-width:120px
+}
+
+.row label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0;
+  font-weight:400
+}
+
+.row input[type=checkbox]{
+  width:22px;
+  min-height:24px
+}
+
+
+/* =========================
+   Badge
+   ========================= */
+
+.badge{
+  display:inline-block;
+  border-radius:6px;
+  padding:3px 8px;
+  background:#EEE2DA;
+  color:var(--dark-roast);
+  font-size:.875rem
+}
+
+
+/* =========================
+   Queue
+   ========================= */
+
+.queueRow{
+  padding:5px
+}
+
+.queueRow button{
+  margin-left:6px;
+  padding:4px 12px
+}
+
+
+/* =========================
+   Message
+   ========================= */
+
+#message{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:#F5E2C8;
+  color:#6B431F;
+  border-radius:8px;
+  padding:0
+}
+
+#message:not(:empty){
+  padding:12px;
+  margin-bottom:12px
+}
+
+#message.error{
+  background:#F4DEDC;
+  color:#8C342F
+}
+
+
+/* =========================
+   Dialog
+   ========================= */
+
+dialog{
+  border:1px solid var(--line);
+  border-radius:16px;
+  width:480px;
+  max-width:calc(100% - 24px);
+  max-height:90dvh;
+  overflow-y:auto;
+  padding:22px;
+  background:var(--vanilla);
+  color:var(--text-main)
+}
+
+dialog::backdrop{
+  background:rgba(45,29,23,.58)
+}
+
+dialog button[type=submit]{
+  width:100%
+}
+
+
+/* =========================
+   기타
+   ========================= */
+
+#audit{
+  font-size:.875rem
+}
+
+#queueList{
+  padding-left:25px
+}
+
+[hidden]{
+  display:none!important
+}
+
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media(max-width:540px){
+
+  main{
+    padding:8px 10px 30px
+  }
+
+  header{
+    padding:12px
+  }
+
+  .quick{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  article{
+    padding:16px
+  }
+
+  .hero{
+    padding:22px
+  }
+
+  .calendar-grid{
+    gap:2px
+  }
+
+  .day{
+    padding:7px 3px;
+    min-height:92px;
+    border-radius:6px
+  }
+
+  .day b{
+    padding-left:3px;
+    font-size:.8rem;
+    letter-spacing:-.03em
+  }
+
+  .day small{
+    font-size:.75rem
+  }
+
+  .toolbar{
+    gap:6px
+  }
+
+  .toolbar button{
+    padding:8px 11px
+  }
+
+  .toolbar label{
+    font-size:.875rem
+  }
+
+  .toolbar input{
+    width:86px
+  }
+
+  .toolbar select{
+    width:63px
+  }
+
+}
+
+
+/* =========================
+   Motion
+   ========================= */
+
+@media(prefers-reduced-motion:no-preference){
+
+  button{
+    transition:
+      background .12s,
+      border-color .12s,
+      filter .12s,
+      transform .12s
+  }
+
+  button:active{
+    transform:translateY(1px)
+  }
+
+}
+
+
+/* 휴대폰 노치와 입력 오류 표시 */
+body { padding-bottom: env(safe-area-inset-bottom); }
+#formMessage:not(:empty) { color:#922626; background:#fff0ed; padding:10px; border-radius:8px; }
+@media(max-width:540px) { .day b { padding-left:1px; border-left-width:2px; } }
+
+/* GitHub Pages PWA standalone 보정 */
+@media (display-mode: standalone) {
+  header {
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  body {
+    min-height: 100dvh;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
