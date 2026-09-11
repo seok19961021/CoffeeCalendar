@@ -2,7 +2,7 @@
   "id": "/CoffeeCalendar/",
   "name": "우리 부서 커피 당번",
   "short_name": "커피당번",
-  "description": "부서 커피 캘린더 실행 및 홈 화면 설치",
+  "description": "부서 커피 당번 및 점심 일정 관리",
   "lang": "ko",
   "start_url": "./?launch=home",
   "scope": "./",
