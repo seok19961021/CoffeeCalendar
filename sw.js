@@ -1,17 +1,16 @@
 'use strict';
 
 /*
- * 앱 껍데기만 캐시한다.
- * PIN, 세션 토큰, 일정 데이터, Apps Script API 응답은 캐시하지 않는다.
+ * v4:
+ * - 앱 코드(index.html / app.js / styles.css)는 캐시하지 않는다.
+ * - 아이콘/manifest만 캐시한다.
+ * - 이전 coffee-* 캐시는 activate 시 모두 삭제한다.
+ * 앱 자체가 온라인 전용이므로 코드 최신성 우선.
  */
-const CACHE = 'coffee-pwa-20260911-api-v3';
+const CACHE = 'coffee-pwa-20260911-api-v4';
 const BASE = new URL('./', self.location.href);
 
-const FILES = [
-  './',
-  './index.html',
-  './styles.css',
-  './app.js',
+const STATIC_FILES = [
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
@@ -20,25 +19,19 @@ const FILES = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches
-      .open(CACHE)
+    caches.open(CACHE)
       .then(cache =>
         cache.addAll(
-          FILES.map(path =>
-            new URL(path, BASE).href
-          )
+          STATIC_FILES.map(path => new URL(path, BASE).href)
         )
       )
-      .then(() =>
-        self.skipWaiting()
-      )
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches
-      .keys()
+    caches.keys()
       .then(keys =>
         Promise.all(
           keys
@@ -46,28 +39,17 @@ self.addEventListener('activate', event => {
               key.startsWith('coffee-') &&
               key !== CACHE
             )
-            .map(key =>
-              caches.delete(key)
-            )
+            .map(key => caches.delete(key))
         )
       )
-      .then(() =>
-        self.clients.claim()
-      )
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
 
-  const url =
-    new URL(
-      event.request.url
-    );
-
-  /*
-   * GitHub Pages의 정적 파일만 제어한다.
-   * Apps Script API 요청은 절대 캐시하지 않는다.
-   */
+  // 다른 도메인(Cloudflare / Apps Script)은 전혀 건드리지 않는다.
   if (
     event.request.method !== 'GET' ||
     url.origin !== BASE.origin ||
@@ -76,88 +58,30 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  /*
-   * 페이지 이동: 네트워크 우선
-   */
+  // HTML / JS / CSS는 항상 네트워크에서 최신본을 받는다.
   if (
-    event.request.mode ===
-    'navigate'
+    event.request.mode === 'navigate' ||
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/app.js') ||
+    url.pathname.endsWith('/styles.css') ||
+    url.pathname === BASE.pathname
   ) {
-
     event.respondWith(
-      fetch(
-        event.request
-      )
-      .then(response => {
-
-        if (
-          response.ok
-        ) {
-
-          const copy =
-            response.clone();
-
-          event.waitUntil(
-            caches
-              .open(CACHE)
-              .then(cache =>
-                cache.put(
-                  new URL(
-                    './',
-                    BASE
-                  ).href,
-                  copy
-                )
-              )
-          );
-        }
-
-        return response;
-      })
-      .catch(() =>
-        caches.match(
-          new URL(
-            './',
-            BASE
-          ).href
-        )
-      )
+      fetch(event.request, { cache: 'no-store' })
     );
-
     return;
   }
 
-  /*
-   * 정적 파일: 캐시 우선
-   */
+  // 아이콘과 manifest만 캐시 우선.
   const isStatic =
-    FILES.some(path =>
-      new URL(
-        path,
-        BASE
-      ).pathname ===
-      url.pathname
+    STATIC_FILES.some(path =>
+      new URL(path, BASE).pathname === url.pathname
     );
 
-  if (
-    isStatic
-  ) {
-
+  if (isStatic) {
     event.respondWith(
-      caches
-        .match(
-          event.request,
-          {
-            ignoreSearch:
-              true
-          }
-        )
-        .then(cached =>
-          cached ||
-          fetch(
-            event.request
-          )
-        )
+      caches.match(event.request, { ignoreSearch: true })
+        .then(cached => cached || fetch(event.request))
     );
   }
 });
